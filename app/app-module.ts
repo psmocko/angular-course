@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import {BrowserModule} from '@angular/platform-browser'
 import {RouterModule} from '@angular/router';
+import { HttpModule } from '@angular/http';
 import {AuthService} from './user/auth.service';
 
 import {
@@ -11,25 +12,29 @@ import {
     CreateEventComponent,    
     CreateSessionComponent,
     SessionListComponent,
-    DurationPipe
+    UpvoteComponent,
+    DurationPipe,
+    VoterService,
+    LocationValidator,
+    EventResolverService    
 } from './events/index';
 
-import { EventsAppComponent } from './events-app.component'
-import {NavBarComponent} from './nav/navbar.component'
-import { TOASTR_TOKEN, IToastr } from './common/toastr.service';
-import {CollapsableWellComponent} from './common/collapsable-well.component';
-import {appRoutes} from './routes'
-import { Error404Component } from './errors/404.component'
-import { EventRouteActivatorService } from './events/event-details/event-route-activator.service'
-import { EventsListResolverService } from './events/events-list-resolver.service'
+import { EventsAppComponent } from './events-app.component';
+import {NavBarComponent} from './nav/navbar.component';
+import { JQ_TOKEN, TOASTR_TOKEN, IToastr, CollapsableWellComponent, SimpleModalComponent, ModalTriggerDirective } from './common/index';
+import {appRoutes} from './routes';
+import { Error404Component } from './errors/404.component';
+import { EventsListResolverService } from './events/events-list-resolver.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 declare let toastr:IToastr;
+declare let jQuery:Object;
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
+        HttpModule,
         ReactiveFormsModule,
         RouterModule.forRoot(appRoutes)
     ],
@@ -37,23 +42,29 @@ declare let toastr:IToastr;
         EventsAppComponent,
         EventsListComponent,
         EventThumbnailComponent,
-        EventDetailsComponent,
+        EventDetailsComponent,        
         NavBarComponent,
         CreateEventComponent,
         Error404Component,
         CreateSessionComponent,
         SessionListComponent,
         CollapsableWellComponent,
-        DurationPipe      
+        ModalTriggerDirective,
+        DurationPipe,
+        SimpleModalComponent,
+        UpvoteComponent,
+        LocationValidator     
     ],
     providers: [
         EventService, 
         { provide: TOASTR_TOKEN, useValue: toastr }, 
+        { provide: JQ_TOKEN, useValue: jQuery }, 
         //{provide: MinimalLogger, useExisting: Logger}  -- Fascade pattern
         //{provide: Logger, useFactory: factory()}       -- Factory complex objects
-        EventRouteActivatorService,        
+        EventResolverService,        
         EventsListResolverService,
         AuthService,
+        VoterService,
         {
             provide: 'canDeactivateCreateEvent',
             useValue: checkDirtyState

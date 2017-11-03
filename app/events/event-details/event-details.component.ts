@@ -1,5 +1,5 @@
 import {Component} from '@angular/core'
-import {ActivatedRoute} from '@angular/router' 
+import {ActivatedRoute, Params} from '@angular/router' 
 import {EventService} from '../shared/event.service'
 import {IEvent, ISession} from '../shared/index'
 
@@ -22,7 +22,13 @@ export class EventDetailsComponent{
     }
 
     ngOnInit(){
-        this.event = this.eventService.getEvent(+this.route.snapshot.params['id']);
+        this.route.data.forEach((data)=>{
+            this.event = data['event'];                
+            this.addMode = false;
+        });
+            //this.event = this.eventService.getEvent(+params['id']);                
+
+        //this.event = this.eventService.getEvent(+this.route.snapshot.params['id']);
     }
 
     addSession(){
@@ -37,7 +43,7 @@ export class EventDetailsComponent{
         const nextId = Math.max.apply(null, this.event.sessions.map(s=>s.id));
         session.id = nextId;
         this.event.sessions.push(session);
-        this.eventService.updateEvent(this.event);
+        this.eventService.saveEvent(this.event).subscribe();
         this.addMode = false;
     }
 }
